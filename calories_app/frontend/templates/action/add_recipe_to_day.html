@@ -1,0 +1,45 @@
+{% extends 'dashboard.html' %}
+
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>{{ recipe.title }}</h4>
+                    {% if delete_button %} <a href="{{ delete_url }}" class="btn btn-danger">DELETE</a> {% endif %}
+                </div>
+                <div class="card-body">
+                    <form method="POST" class="form">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Details</h4>
+                    <p>per 100g</p>
+                    
+                    <a href="{{ day.get_absolute_url }}" class="btn btn-info">BACK</a>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                      <li class="list-group-item">Calories: {{ recipe.calories }} gr</li>
+                      <li class="list-group-item">Protein: {{ recipe.protein }} gr</li>
+                      <li class="list-group-item">Fat: {{ recipe.fats }} gr</li>
+                      <li class="list-group-item">Carbs: {{ recipe.carbs }} gr</li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

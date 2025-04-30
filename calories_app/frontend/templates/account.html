@@ -1,0 +1,115 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Account</h4>
+                <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+                <p>Statistics</p>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <td>Suggested Calories</td>
+                        <td>{{ profile.calories }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Suggested Protein</td>
+                        <td>{{ profile.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>BMR</td>
+                        <td>{{ profile.bmr }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Age</td>
+                        <td>{{ profile.age }}</td>
+                    </tr>
+                    <tr>
+                        <td>Activity Level</td>
+                        <td>{{ profile.activity_lvl }}</td>
+                    </tr>
+                    <tr>
+                        <td>Height</td>
+                        <td>{{ profile.height }}</td>
+                    </tr>
+                    <tr>
+                        <td>Weight</td>
+                        <td>{{ profile.weight }}</td>
+                    </tr>
+                    <tr>    
+                        <td>Gender</td>
+                        <td>{{ profile.gender }}</td>
+                    </tr>
+                    <tr>
+                        <td>Year of Birth</td>
+                        <td>{{ profile.year_of_birth }}</td>
+                    </tr>
+                </table>
+                <br>
+                <h4>Edit Profile</h4>
+                <form action="{% url 'handle_profile_form' %}" class="form" method="post">
+                    {% csrf_token %}
+                    {{ profile_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Target Calories</h4>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <td>Target</td>
+                        <td>{{ target_calories.get_target_display }}</td>
+                    </tr>
+                    <tr>
+                        <td>Calories</td>
+                        <td>{{ target_calories.calories }}</td>
+                    </tr>
+                    <tr>
+                        <td>Protein</td>
+                        <td>{{ target_calories.protein }}</td>
+                    </tr>
+                </table>
+
+                <br>
+                <h4>Edit Target Calories</h4>
+                <form action="{% url 'handle_target_calories_form' %}" method="post">
+                    {% csrf_token %}
+                    {{ target_calories_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+        <br />
+        <div class="card">
+            <div class="card-header">
+                <h4>Ask LLM</h4>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>
+                        <a href="">I want to loose 4 kilos per month</a>
+                    </li>
+                    <li>
+                        <a href="">I want to gain 4 kilos per month</a>
+                    </li>
+                    <li>
+                        <a href="">I want to loose 2 kilos per month</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h4>Analyze Food for Category: {{ category }}</h4>
+            </div>
+            <div class="card-body">
+                <h6>Sentence: {{ sentence }}</h6>
+                <p>The suggested foods are based on the sentence you provided. You can add your own quantity or the suggested quantity to the category.</p>
+                <p>Here are the suggested foods:</p>
+                <ul>
+                    {% for food, qs in suggested_foods.items %}
+                        <li>{{ food }}: {{ qs.1 }} gr</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Suggested Foods</h4>
+            </div>
+            <div class="card-body">
+                {% for food, qs in suggested_foods.items %}
+                    <h6>{{ food }}: {{ qs.1 }} gr</h6>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Calories</th>
+                                <th>Protein</th>
+                                <th>Carbs</th>
+                                <th>Fats</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for recipe in qs.0 %}
+                                <tr>
+                                    <td title="{{ recipe.title }}">{{ recipe.title|truncatechars:20 }}</td>
+                                    <td>{{ recipe.calories }}</td>
+                                    <td>{{ recipe.protein }}</td>
+                                    <td>{{ recipe.carbs }}</td>
+                                    <td>{{ recipe.fats }}</td>
+                                    <td>
+                                        <a target="_blank" href="{% url 'add_recipe_to_day' day.id recipe.id %}" class="btn btn-primary">ADD YOUR OWN QTY</a>
+                                        <a target="_blank" href="{% url 'create_recipe_llm' day.id recipe.id category.id %}?qty={{ qs.1 }}" class="btn btn-secondary">ADD SUGGESTED QTY</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                {% endfor %}
+        </div>
+    </div>  
+</div>
+
+{% endblock %}

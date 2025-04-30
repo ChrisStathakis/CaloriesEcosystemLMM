@@ -1,0 +1,200 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ day.date|date:"d/M/Y" }}</h4>
+                <p>Details</p>
+            </div>
+            <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Calories: </th>
+                        <th>{{ day.calories }} gr</th>
+                    </tr>
+
+                    <tr>
+                        <th>Protein: </th>
+                        <th>{{ day.protein }} gr</th>
+                    </tr>
+
+                    <tr>
+                        <th>Carbs: </th>
+                        <th>{{ day.carbs }} gr</th>
+                    </tr>
+
+                    <tr>
+                        <th>Fat: </th>
+                        <th>{{ day.fats }} gr</th>
+                    </tr>
+                </thead>
+            </table>
+            <form method="GET" action="{% url 'analyze_food' day.id %}">
+                {{ llm_recipe_form.as_p }}
+                <button type="submit" class="btn btn-primary">Add Sentence</button>
+            </form>
+        </div>
+
+        </div>
+        <br/>
+        
+    </div>
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Choose Category</h4>
+                <div class="accordion" id="accordionExample">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        CLICK TO CREATE NEW CATEGORY
+                      </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                        {% for category in categories %}
+                            <a href="{% url 'create_day_category' day.id category.id %}" class="btn btn-info">CREATE CATEGORY: {{ category }}</a>
+                            <br/>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        
+    </div>
+</div>
+
+<div class="row">
+    {% for category in day_categories %}
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>
+                            <span class="badge rounded-pill bg-primary">{{ category }}</span>
+                        </h4>
+                        <ul class="list-group">
+                        <li class="list-group-item">Calories: {{ category.calories }} gr</li>
+                        <li class="list-group-item">Protein: {{ category.protein }} gr</li>
+                        <li class="list-group-item">Carbs: {{ category.carbs }} gr</li>
+                        <li class="list-group-item">Fat: {{ category.fats }} gr</li>
+
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>RECIPE</th>
+                                    <th>GR</th>
+                                    <th>CALORIES</th>
+                                    <th>PROTEIN</th>
+                                    <th>CARBS</th>
+                                    <th>FAT</th>
+                                    <th>-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for recipe in category.user_category_recipes.all %}
+                                    <tr>
+                                        <td>{{ recipe }}</td>
+                                        <td>{{ recipe.qty }} gr</td>
+                                        <td>{{ recipe.calories }} gr</td>
+                                        <td>{{ recipe.protein }} gr</td>
+                                        <td>{{ recipe.carbs }} gr</td>
+                                        <td>{{ recipe.fats }} gr</td>
+                                        <td><a href="{{ recipe.get_edit_url }}" class="btn btn-danger">EDIT</a> </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Add Recipe</h4>
+                <form class="form">
+                    <input data-href="{% url 'ajax_search_recipes' day.id %}"
+                     style="background-color: #404040; color:white" type="text" 
+                     class="form-control search_button" placeholder="Search"
+                    >
+                </form>
+            </div>
+            <div class="result_container">
+                {% include 'ajax_views/recipe_search.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+    <script>
+        $('.search_button').on('submit', function(evt)  {
+            evt.preventDefault();
+            const btn = $(this);;
+            const value = btn.val();
+            $.ajax({
+                method: "GET",
+                dataType: "json",
+                url: "{% url 'ajax_suggest_food' %}?q=" + value,
+
+                success: function(data){
+                    console.log(data)
+                    $('.result_container').empty();
+                    $('.result_container').html(data.result)
+                }
+            })
+
+        })
+    </script>
+
+    <script>
+        $('.search_button').on('keyup', function(evt)  {
+            const btn = $(this);;
+            const value = btn.val();
+            const url = btn.attr('data-href');
+            console.log(url);
+            $.ajax({
+                method: "GET",
+                dataType: "json",
+                url: "{% url 'ajax_search_recipes' day.id %}?q=" + value,
+
+                success: function(data){
+                    $('.result_container').empty();
+                    $('.result_container').html(data.result)
+                }
+            })
+    
+        })
+    </script>
+
+    <script>
+        $('.search_button').on("keyup", function(evt) {
+            console.log("hit")
+            const btn = $(this);
+            const value = btn.val();
+            console.log("val", value);
+            Cookies.set("llm_recipe", value);
+        })
+    </script>
+    
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <div class="card-header">
+                <h4>{{ day.date|date:"d/M/Y" }}</h4>
+                <p>Details</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

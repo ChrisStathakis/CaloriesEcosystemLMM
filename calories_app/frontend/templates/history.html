@@ -1,0 +1,118 @@
+{% extends "dashboard.html  " %}
+
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Filter by Date Range</h4>
+            </div>
+            <div class="card-body">
+                <form method="get" class="form-inline">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="mr-2">Start Date:</label>
+                            {{ form.start_date }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="mr-2">End Date:</label>
+                            {{ form.end_date }}
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary">Apply Filter</button>
+                            <a href="{% url 'history' %}" class="btn btn-secondary">Reset</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>History</h4>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Calories</th>
+                            <th>Protein</th>
+                            <th>Carbs</th>
+                            <th>Fats</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for day in qs %}
+                            <tr>
+                                <td>{{ day.date }} gr</td> 
+                                <td>{{ day.calories }} gr</td>
+                                <td>{{ day.protein }} gr</td>
+                                <td>{{ day.carbs }} gr</td>
+                                <td>{{ day.fats }} gr</td>
+                                <td>
+                                    <a href="{% url 'day_calories_detail' day.id %}" class="btn btn-primary">View</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h4>Statistics</h4>
+                {% if form.start_date.value or form.end_date.value %}
+                    <p class="text-muted">
+                        {% if form.start_date.value and form.end_date.value %}
+                            From {{ form.start_date.value }} to {{ form.end_date.value }}
+                        {% elif form.start_date.value %}
+                            From {{ form.start_date.value }}
+                        {% elif form.end_date.value %}
+                            Until {{ form.end_date.value }}
+                        {% endif %}
+                    </p>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Average per Day</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Calories</td>
+                            <td>{{ avg_calories }} gr</td>
+                        </tr>
+                        <tr>
+                            <td>Protein</td>
+                            <td>{{ avg_protein }} gr</td>
+                        </tr>
+                        <tr>
+                            <td>Carbs</td>
+                            <td>{{ avg_carbs }} gr</td>
+                        </tr>
+                        <tr>
+                            <td>Fats</td>
+                            <td>{{ avg_fats }} gr</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

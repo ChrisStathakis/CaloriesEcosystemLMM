@@ -1,0 +1,27 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Register</h2>
+                </div>
+                <div class="card-body">
+                    <form class="form" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                    <br/>
+                    <hr/>
+                    {{ form.errors }}
+                    <a href="{% url 'login' %}">Already have an account? Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
