@@ -1,4 +1,5 @@
 import os
+from django.conf import settings
 from langchain_ollama.llms import OllamaLLM
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
@@ -7,9 +8,14 @@ import re
 import json
 from deep_translator import GoogleTranslator
 
+LLAMA = "llama3:8b"
+QWEN = "qwen:1.8b"
+
+SELECTED_MODEL = QWEN
+
 
 def ask_llm(food: str):
-    response = ollama.chat(model="llama3:8b", messages=[
+    response = ollama.chat(model=SELECTED_MODEL, messages=[
     {
         "role": "user",
         "content": """Please provide the nutritional information per 100 grams for {0}. 
@@ -34,7 +40,7 @@ def translate_to_english(sentence: str):
     
 
 def get_nutrition_info(sentence: str):
-    response = ollama.chat(model="llama3:8b", messages=[
+    response = ollama.chat(model=SELECTED_MODEL, messages=[
     {
         "role": "user",
         "content": """Extract foods and their amounts from this sentence: {0}
@@ -52,9 +58,6 @@ def get_nutrition_info(sentence: str):
 
     content = response['message']['content']
     return content
-
-
-print(get_nutrition_info("I eated for breakfast 2 slice of bread and 1 egg and little bit of peanut butter"))
 
 
 def string_to_list(input_str: str):

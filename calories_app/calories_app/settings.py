@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-gjr&1-m$%74602n_^-9u=hhcdtjnp*tv2z&!z&lxg!6@zq-8ll
 DEBUG = True
 
 ALLOWED_HOSTS = ["*", ]
-
+USE_LLM = False
 
 # Application definition
 
@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     # third party
     "import_export",
     "corsheaders",
-    "graphene_django",
     "rest_framework",
     'rest_framework_simplejwt',
 
@@ -141,12 +140,15 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 20,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20,
 }
 
 SIMPLE_JWT = {
@@ -156,9 +158,6 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-GRAPHENE = {
-    "SCHEMA": "calories_app.schema.schema"
-}
 
 CORS_ALLOW_ALL_ORIGINS = True
 

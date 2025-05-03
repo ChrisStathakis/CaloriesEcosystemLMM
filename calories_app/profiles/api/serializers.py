@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken, Token
 
-from profiles.models import Profile
+from profiles.models import Profile, TargetCalories
 
 User = get_user_model()
 
@@ -14,6 +14,12 @@ class ProfileSerializer(ModelSerializer):
         model = Profile
         fields = ["user", "height", "weight", "activity_lvl", "year_of_birth", "calories", "bmr", "age", "gender", "id"]
 
+
+class TargetCaloriesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TargetCalories
+        fields = ['calories', 'profile', 'target', 'protein']
 
 class UserSerializer(ModelSerializer):
 

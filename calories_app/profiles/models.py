@@ -75,13 +75,11 @@ class Profile(models.Model):
         """
         return age
 
-
     def calculate_calories(self):
         mifflin = mifflin_st_jeor_bmr(Decimal(self.weight), Decimal(self.height), Decimal(self.age), self.gender)
         harris = harris_benedict_bmr(Decimal(self.weight), Decimal(self.height), Decimal(self.age), self.gender)
         return (mifflin + harris) / 2
         
-
 
 class TargetCalories(models.Model):
     OPTIONS_OF_TARGET = (
@@ -93,7 +91,6 @@ class TargetCalories(models.Model):
     target = models.CharField(max_length=1, choices=OPTIONS_OF_TARGET)
     calories = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     protein = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-
 
     def show_target(self):
         if self.target == "A":
