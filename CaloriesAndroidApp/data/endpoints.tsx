@@ -1,4 +1,6 @@
-export const BASE_URL = "http://192.168.1.5:8000/";
+export const  BASE_URL = "http://192.168.0.175:8000/";
+// "http://192.168.1.5:8000/";
+
 export const API_URL = BASE_URL + "api/";
 
 export const LOGIN_ENDPOINT = API_URL + "token/";

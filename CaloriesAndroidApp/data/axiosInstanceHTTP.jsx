@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { API_URL } from './endpoints';
+import { API_URL, REFRESH_TOKEN_ENDPOINT } from './endpoints';
+import Storage from './myStorage';
+import { ACCEES_TOKEN, REFRESH_TOKEN, IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE, IS_AUTHENTICATED_TRUE} from './actionTypes'
 
 
 const axiosInstance = axios.create({
@@ -11,7 +13,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('accessToken');
+        const token = Storage.getItem(ACCEES_TOKEN);
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -29,13 +31,13 @@ axiosInstance.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const refreshToken = localStorage.getItem('refreshToken');
-                const response = await axios.post('https://your-api-url.com/api/refresh-token', {
+                const refreshToken = Storage.getItem(REFRESH_TOKEN);
+                const response = await axios.post(REFRESH_TOKEN_ENDPOINT, {
                     token: refreshToken,
                 });
 
                 const { accessToken } = response.data;
-                localStorage.setItem('accessToken', accessToken);
+                Storage.setItem(ACCEES_TOKEN, accessToken);
 
                 axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
                 originalRequest.headers.Authorization = `Bearer ${accessToken}`;

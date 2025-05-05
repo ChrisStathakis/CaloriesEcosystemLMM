@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
 
 export default function Index() {
   const [isAuthenticated, setIsAuthenticated] = useState('loading');
+  
 
   useEffect (() => {
     const checkAuthStatus = async () => {

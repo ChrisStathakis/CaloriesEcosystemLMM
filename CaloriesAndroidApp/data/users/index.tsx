@@ -1,6 +1,7 @@
-import * as SecureStore from "expo-secure-store";
+
 import { IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE, ACCESS_TOKEN, REFRESH_TOKEN, IS_AUTHENTICATED_TRUE } from '../actionTypes'
 import { LOGIN_ENDPOINT, API_URL } from "../endpoints";
+import  Storage from "../myStorage"
 import axios from "axios";
 
 
@@ -15,7 +16,7 @@ const axiosInstance = axios.create({
 
 export const saveAuthToken = async (token: string) => {
   try {
-    await SecureStore.setItemAsync('access_token', token);
+    await Storage.setItem('access_token', token);
   } catch (error) {
     console.error('Error saving access token:', error);
   }
@@ -32,12 +33,12 @@ export const fetchAuthToken = async (data: {username: string, password: string})
       if (response.status === 200) {
         const access_token = response.data.access;
         const refresh_token = response.data.refresh;
-        SecureStore.setItemAsync(IS_AUTHENTICATED, IS_AUTHENTICATED_TRUE);
-        SecureStore.setItemAsync(ACCESS_TOKEN, access_token);
-        SecureStore.setItemAsync(REFRESH_TOKEN, refresh_token);
+        Storage.setItem(IS_AUTHENTICATED, IS_AUTHENTICATED_TRUE);
+        Storage.setItem(ACCESS_TOKEN, access_token);
+        Storage.setItem(REFRESH_TOKEN, refresh_token);
         return response.data;
       } else {
-        SecureStore.setItemAsync(IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE);
+        Storage.setItem(IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE);
         console.error('Error fetching access token:', response.statusText);
         return null;
     }})
@@ -48,14 +49,14 @@ export const fetchAuthToken = async (data: {username: string, password: string})
 
 export const checkIfAuthenticated = async () => {
   try {
-    const token = await SecureStore.getItemAsync(IS_AUTHENTICATED);
+    const token = await Storage.getItem(IS_AUTHENTICATED);
     if (token === null) {
-      SecureStore.setItemAsync(IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE);
+      Storage.setItem(IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE);
       return false;
     }
     return token;
   } catch (error) {
-    await SecureStore.setItemAsync(IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE);
+    await Storage.setItem(IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE);
     console.error('Error checking authentication:', error);
     return false;
   }
