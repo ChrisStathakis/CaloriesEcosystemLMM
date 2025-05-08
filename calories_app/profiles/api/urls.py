@@ -1,6 +1,8 @@
 from django.urls import path
 
-from .views import profile_homepage_api_view, ProfileApiView, UserRegisterApiView, CaloriesTargetApiView
+from .views import (profile_homepage_api_view, ProfileApiView, UserRegisterApiView, CaloriesTargetApiView,
+                    HomepageDataApiView
+                    )
 
 app_name = "api_profile"
 
@@ -10,4 +12,5 @@ urlpatterns = [
     path('detail/', ProfileApiView.as_view(), name="profile"),
     path("register/", UserRegisterApiView.as_view(), name="register"),
     path("target/", CaloriesTargetApiView.as_view(), name="target"),
+    path('homepage-data/', HomepageDataApiView.as_view(), name="homepage_data")
 ]

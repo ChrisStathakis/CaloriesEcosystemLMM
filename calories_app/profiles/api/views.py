@@ -1,17 +1,17 @@
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework.response import Response
-from rest_framework import status
+
 from rest_framework import permissions
 from rest_framework.decorators import api_view
 from django.contrib.auth import get_user_model
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from ..models import Profile, TargetCalories
-from .serializers import UserSerializer, ProfileSerializer, TargetCaloriesSerializer
-from .permissions import IsOwnerPermission
+from .serializers import UserSerializer, ProfileSerializer, TargetCaloriesSerializer, HomepageSerializer
+import datetime
+from django.db.models import Sum, Avg
+
+from planning.models import DayCalories, DayCategory
 
 
 User = get_user_model()
@@ -21,10 +21,11 @@ User = get_user_model()
 def profile_homepage_api_view(request, format=None):
     return Response({
         "access_token": reverse("token_obtain_pair", request=request, format=format),
-        "token_refresh": reverse("token_obtain_pair", request=request, format=format),
+        "token_refresh": reverse("token_refresh", request=request, format=format),
         "register": reverse("api_profile:register", request=request, format=format),
         "profile": reverse("api_profile:profile", request=request, format=format),
-        "target": reverse("api_profile:target", request=request, format=format)
+        "target": reverse("api_profile:target", request=request, format=format),
+        "homepage_data": reverse("api_profile:homepage_data", request=request, format=format)
     })
 
 
@@ -64,3 +65,16 @@ class CaloriesTargetApiView(APIView):
             return Response({'target': 'No Object'})
         data = TargetCaloriesSerializer(obj).data
         return Response(data)
+
+
+class HomepageDataApiView(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_object(self):
+        obj = self.request.user.profile
+        return obj
+
+    def get(self, request):
+        profile = self.get_object()
+        return Response(HomepageSerializer.build(profile).data)
+

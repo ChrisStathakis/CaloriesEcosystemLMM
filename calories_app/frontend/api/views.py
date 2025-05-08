@@ -10,3 +10,4 @@ def api_homepage(request, format=None):
         "profiles": reverse('api_profile:home', request=request, format=format),
         "planning": reverse('api_planning:home', request=request, format=format),
     })
+
