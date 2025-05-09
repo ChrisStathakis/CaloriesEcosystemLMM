@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API_URL, REFRESH_TOKEN_ENDPOINT } from './endpoints';
 import Storage from './myStorage';
-import { ACCEES_TOKEN, REFRESH_TOKEN, IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE, IS_AUTHENTICATED_TRUE} from './actionTypes'
+import { ACCEES_TOKEN, REFRESH_TOKEN, IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE, IS_AUTHENTICATED_TRUE, ACCESS_TOKEN} from './actionTypes'
 
 
 const axiosInstance = axios.create({
@@ -32,20 +32,34 @@ axiosInstance.interceptors.response.use(
 
             try {
                 const refreshToken = Storage.getItem(REFRESH_TOKEN);
+                console.log("refreshToken", refreshToken);
                 const response = await axios.post(REFRESH_TOKEN_ENDPOINT, {
-                    token: refreshToken,
+                    refresh: refreshToken,
                 });
+                console.log("response")
+                console.log(refreshToken, response.data, response.status);
 
-                const { accessToken } = response.data;
-                Storage.setItem(ACCEES_TOKEN, accessToken);
+                if (response.status == 401 || response.status == 500) {
+                    Storage.removeItem(REFRESH_TOKEN);
+                    Storage.setItem(IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE);
+                    throw new Error('Failed to refresh token');
+                }
 
-                axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
-                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                if (response.status === 200) {
+                    const accessToken  = response.data.access;
+                    Storage.setItem(ACCESS_TOKEN, accessToken);
+
+                    axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
+                    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+
+                }
 
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
-                console.error('Refresh token failed', refreshError);
+                console.error('Refresh token failed::', refreshError);
                 // Handle logout or redirect to login
+                Storage.setItem(REFRESH_TOKEN, '');
+                Storage.setItem(IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE);
                 return Promise.reject(refreshError);
             }
         }

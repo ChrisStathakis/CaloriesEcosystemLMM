@@ -8,7 +8,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from .serializers import DayCaloriesSerializer, DayCategorySerializer, UserRecipeSerializer
 from ..models import DayCategory, DayCalories, UserRecipe
 from .filters import DateRangeFilter
-
+from datetime import datetime
 
 @api_view(['GET'])
 def planning_homepage_view(request, format=None):
@@ -24,6 +24,25 @@ class DayCaloriesListApiView(ListCreateAPIView):
     serializer_class = DayCaloriesSerializer
     filterset_fields = ['date', ]
     filterset_class = DateRangeFilter
+
+    def get_queryset(self):
+        profile = self.request.user.profile
+        return DayCalories.objects.filter(profile=profile)
+
+
+class DayCaloriesDetailApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = DayCaloriesSerializer
+    permission_classes = [IsAuthenticated, ]
+    lookup_field = "date"
+
+    def get_object(self):
+        # you need to pass the date on this format  'YYYY-MM-DD'
+        profile = self.request.user.profile
+        obj, _ = DayCalories.objects.get_or_create(profile=profile,
+                                                   date=datetime.strptime(self.kwargs.get(self.lookup_field),
+                                                                          '%Y-%m-%d')
+                                                   )
+        return obj
 
     def get_queryset(self):
         profile = self.request.user.profile
@@ -46,8 +65,6 @@ class UserRecipeApiView(ListCreateAPIView):
 
     def get_queryset(self):
         return UserRecipe.objects.filter(day_calories__profile=self.request.user.profile)
-
-
 
 
 

@@ -5,13 +5,17 @@ export const API_URL = BASE_URL + "api/";
 
 export const LOGIN_ENDPOINT = API_URL + "token/";
 export const REFRESH_TOKEN_ENDPOINT = API_URL + "token/refresh/";
-export const PROFILE_ENDPOINT = API_URL + "users/profile/";
+export const PROFILE_ENDPOINT = API_URL + "profile/detail/";
+export const HOMEPAGE_DATA_ENDPOINT = API_URL + "profile/homepage-data/";
 
 export const RECIPE_LIST_ENFDPOINT = API_URL + "recipes/list/";
 export const RECIPE_DETAIL_ENFDPOINT = API_URL + "recipes/detail/";
 
 export const GRAPHQL_ENDPOINT = `${BASE_URL}graphql`;
 
+
+export const DAY_CALORIES_LIST_ENDPOINT = `${API_URL}/planning/day-calories/`
+export const DAY_CALORIES_DETAIL_ENDPOINT = `${API_URL}/planning/day-calories/`;
 
 
 export const getFullUrl = (path: string) => {

@@ -24,6 +24,7 @@ class TargetCaloriesSerializer(serializers.ModelSerializer):
         model = TargetCalories
         fields = ['calories', 'profile', 'target', 'protein']
 
+
 class UserSerializer(ModelSerializer):
 
     class Meta:

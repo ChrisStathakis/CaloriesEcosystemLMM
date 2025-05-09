@@ -14,11 +14,8 @@ export default function LoginScreen() {
         const data = {username, password};
         console.log("data", data);
         fetchAuthToken(data);
-        try {
-            await fetchAuthToken(data);
-        } catch (error) {
-
-        }
+       
+        
     }
 
 
@@ -27,7 +24,7 @@ export default function LoginScreen() {
         <View style={styles.container}>
             <Text>Login Screen</Text>
             <View style={styles.form_group}>
-                <Text>Username</Text>\
+                <Text>Username</Text>
                 <TextInput 
                     value={username}
                     onChangeText={(text)=> setUsername(text)}

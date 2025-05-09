@@ -31,6 +31,7 @@ export const fetchAuthToken = async (data: {username: string, password: string})
     .then((response) => {
       console.log("response", response);
       if (response.status === 200) {
+        console.log("response", response.data);
         const access_token = response.data.access;
         const refresh_token = response.data.refresh;
         Storage.setItem(IS_AUTHENTICATED, IS_AUTHENTICATED_TRUE);

@@ -1,9 +1,11 @@
 import { checkIfAuthenticated } from "@/data/users";
-import { Link } from "expo-router";
 import { Text, View, StyleSheet } from "react-native";
 import React , { useState, useEffect } from "react";
-import { IS_AUTHENTICATED_FALSE, IS_AUTHENTICATED_TRUE } from "@/data/actionTypes";
+import { ACCESS_TOKEN, IS_AUTHENTICATED, IS_AUTHENTICATED_FALSE, IS_AUTHENTICATED_TRUE, REFRESH_TOKEN } from "@/data/actionTypes";
 import LoginScreen from "@/components/extras/login_screen";
+import { HomepageBodyView } from "@/components/homepage/homepage";
+import Storage from "../../data/myStorage";
+
 
 const styles = StyleSheet.create({
   container: {
@@ -39,12 +41,18 @@ export default function Index() {
     
   }, [])
 
+  useEffect(() => {
+    console.log("changed", Storage.getItem(ACCESS_TOKEN), 
+    Storage.getItem(REFRESH_TOKEN),);  
+  }, [Storage.getItem(IS_AUTHENTICATED)])
 
   
   return (
     <View style={styles.container}>
 
-      {isAuthenticated === IS_AUTHENTICATED_FALSE ? <LoginScreen /> : <Text style={styles.text}>Homepage {isAuthenticated} {IS_AUTHENTICATED_TRUE}</Text>}
+      {isAuthenticated === IS_AUTHENTICATED_FALSE ? <LoginScreen /> : 
+      <HomepageBodyView />
+      }
     </View>
   );
 }

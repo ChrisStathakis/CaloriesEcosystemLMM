@@ -14,7 +14,7 @@ class DayCaloriesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DayCalories
-        fields = ['profile', 'date', 'calories', 'fats', 'carbs', 'protein']
+        fields = ['profile', 'date', 'calories', 'fats', 'carbs', 'protein', 'id']
 
 
 class UserRecipeSerializer(serializers.ModelSerializer):
