@@ -10,6 +10,7 @@ from ..models import DayCategory, DayCalories, UserRecipe
 from .filters import DateRangeFilter
 from datetime import datetime
 
+
 @api_view(['GET'])
 def planning_homepage_view(request, format=None):
     return Response({
@@ -65,11 +66,3 @@ class UserRecipeApiView(ListCreateAPIView):
 
     def get_queryset(self):
         return UserRecipe.objects.filter(day_calories__profile=self.request.user.profile)
-
-
-
-
-
-
-
-
